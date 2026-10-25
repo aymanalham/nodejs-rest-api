@@ -35,7 +35,7 @@ router.post("/register", register);
 router.post("/login", login);
 router.get("/:id", getUser);
 router.post("/", validateUser, createUser);
-router.patch("/:id", updateUser);
+router.patch("/:id", authMiddleware, updateUser);
 router.put("/:id", replaceUser);
 router.delete("/:id", deletUser);
 module.exports = router;

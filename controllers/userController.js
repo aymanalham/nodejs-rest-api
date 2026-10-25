@@ -3,31 +3,43 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
-const Post = require("../models/Post");
 
-const getUsers =async (req,res)=>{
-    const users = await User.find();
-    // res.send(users)
-    res.send("yes get getUsers")
-}
-const getUser = async (req, res ,next) => {
-    
-    let user;
+
+const getUsers = async (req, res) => {
+    const users = await User.find().select("-password");
+    res.send(users);
+};
+const getUser = async (req, res, next) => {
     try {
         const id = req.params.id;
-        user = await User.findById(id);
+
+        const user = await User.findById(id).select("-password");
 
         if (!user) {
-            return res.status(404).send("not found user");
+            return res.status(404).send("User not found");
         }
 
         res.send(user);
 
     } catch (error) {
-       next(error);    
+        next(error);
     }
 };
 
+const getMe = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.userId).select("-password");
+
+        if (!user) {
+            return res.status(404).send("User not found");
+        }
+
+        res.send(user);
+
+    } catch (error) {
+        next(error);
+    }
+};
 
 const createUser = async (req, res) => {
 
@@ -39,11 +51,41 @@ const createUser = async (req, res) => {
 
     res.status(201).send(newUser);
 };
-const updateUser =async (req,res)=>{
-    const id = req.params.id;
-    const user = await User.findByIdAndUpdate(id, req.body,{new:true , runValidators:true});
-    res.status(201).send(user);
+const updateUser = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+       
+       if (req.userId.toString() !== id && req.role !== "admin") {
+    return res.status(403).send("You can only update your own account");
 }
+        const { name, age } = req.body;
+
+        const updates = {};
+
+        if (name !== undefined) {
+            updates.name = name;
+        }
+
+        if (age !== undefined) {
+            updates.age = age;
+        }
+
+        const user = await User.findByIdAndUpdate(
+            id,
+            updates,
+            { new: true, runValidators: true }
+        ).select("-password");
+
+        if (!user) {
+            return res.status(404).send("User not found");
+        }
+
+        res.status(200).send(user);
+
+    } catch (error) {
+        next(error);
+    }
+};
  const replaceUser = async(req,res ,next)=>{
     let user;
      try {
@@ -68,31 +110,33 @@ const deletUser = async(req,res)=>{
     }       
     res.status(201).send(user);
 }
-const register = async(req,res,next)=>{
+const register = async (req, res, next) => {
     try {
-        const name = req.body.name;
-        const age = req.body.age;
-        const email = req.body.email;
-        const password = req.body.password;
-       const hashPassword = await bcrypt.hash(password, 10);
+        
+        const { name, age, email, password } = req.body;
+
+        const hashPassword = await bcrypt.hash(password, 10);
+
         const user = await User.create({
-            name:name,
-            age:age,
-            email:email,
-            password:hashPassword
-            
-        })
+            name,
+            age,
+            email,
+            password: hashPassword,
+            role: "user"
+        });
 
         res.status(201).send({
-            _id:user._id,
-            name:user.name,
-            age:user.age,
-            email:user.email,
+            _id: user._id,
+            name: user.name,
+            age: user.age,
+            email: user.email,
+            role: user.role
         });
+
     } catch (error) {
-        next(error);    
+        next(error);
     }
-}
+};
 const login = async (req, res, next) => {
     try {
         const email = req.body.email;
@@ -114,24 +158,6 @@ const login = async (req, res, next) => {
     } catch (error) {
         next(error);
     }
-};
-const getMe = async (req, res, next) => {
-    try {
-        if (typeof req.body.title ==="string"  &&  req.body.trim().length<= 3 &&  req.body.trim().length >100 ) {
-            
-        }
-       
-        const user = await User.findById(req.userId);
-
-        if (!user) {
-            return res.status(404).send("User not found");
-        }
-
-        res.send(user);
-
-    } catch (error) {
-        next(error);
-    } 
 };
 module.exports = {
     getUsers,

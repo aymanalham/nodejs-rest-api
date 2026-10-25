@@ -105,21 +105,27 @@ const createPost = async(req,res,next)=>{
 const updatePost = async (req, res, next) => {
     try {
         const id = req.params.id;
-        console.log("Requested post ID:", id);
         const post = await Post.findById(id);
-        if (!req.body.title) {
-            return res.status(400).send("Title is required");
-        }
+
         if (!post) {
             return res.status(404).send("Post not found");
         }
+
         if (req.userId.toString() !== post.user.toString()) {
             return res.status(403).send("You are not allowed to update this post");
         }
 
-        post.title = req.body.title;
+        const { title } = req.body;
+
+        if (typeof title !== "string" || title.trim().length < 5 || title.trim().length > 100) {
+            return res.status(400).send("Title must be between 5 and 100 characters");
+        }
+
+        post.title = title.trim();
+
         await post.save();
-        res.send(post);
+
+        res.status(200).send(post);
 
     } catch (error) {
         next(error);

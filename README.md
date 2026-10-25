@@ -1,8 +1,10 @@
 Node.js REST API
 
-A RESTful API built with Node.js, Express.js, and MongoDB. The project provides user authentication, authorization, and post management.
+A RESTful API built with Node.js, Express.js, and MongoDB.
 
-Technologies Used
+This project demonstrates backend development concepts, including user authentication, authorization, database operations, and post management.
+
+Technologies
 
 - Node.js
 - Express.js
@@ -16,9 +18,9 @@ Features
 
 User Management
 
-- Create and retrieve users.
-- Update and delete user information.
 - User registration and login.
+- Retrieve users and individual user information.
+- Update and delete user information.
 - Retrieve the authenticated user's profile.
 
 Authentication and Authorization
@@ -32,67 +34,16 @@ Post Management
 
 - Create, retrieve, update, and delete posts.
 - Associate posts with their authors.
-- Populate author information using Mongoose.
-- Restrict unauthorized users from modifying posts they do not own.
+- Retrieve author information using Mongoose population.
+- Restrict users from modifying posts they do not own.
 
-API Improvements
+API Features
 
 - Pagination.
 - Search posts by title.
-- Sorting results by selected fields and order.
+- Sort results by selected fields and order.
 - Request validation.
 - Centralized error handling.
-
-Getting Started
-
-Prerequisites
-
-Make sure you have installed:
-
-- Node.js
-- npm
-- A MongoDB database
-- Postman (optional, for API testing)
-
-Installation
-
-1. Clone the repository:
-   
-   git clone https://github.com/aymanalham/nodejs-rest-api.git
-
-2. Navigate to the project directory:
-   
-   cd nodejs-rest-api
-
-3. Install the dependencies:
-   
-   npm install
-
-Environment Variables
-
-Create a ".env" file in the project root directory and configure the environment variables required by the application.
-
-Example:
-
-PORT=3000
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_secure_secret_key
-
-Replace the example values with your own configuration.
-
-Important: Never commit your ".env" file, database credentials, or JWT secrets to GitHub.
-
-Running the Application
-
-Start the server using:
-
-npm start
-
-Make sure the start script is configured in "package.json" and the required environment variables are set.
-
-API Testing
-
-You can use Postman to send HTTP requests and test the API endpoints, including authentication, protected routes, user management, and post management.
 
 Project Structure
 
@@ -111,11 +62,61 @@ nodejs-rest-api/
 ├── routes/
 │   ├── posts.js
 │   └── users.js
-├── server.js
+├── .gitignore
 ├── package.json
 ├── package-lock.json
-└── .gitignore
+├── README.md
+└── server.js
+
+Getting Started
+
+Prerequisites
+
+- Node.js
+- npm
+- A MongoDB database
+- Postman (optional, for testing API requests)
+
+Installation
+
+Clone the repository:
+
+git clone https://github.com/aymanalham/nodejs-rest-api.git
+
+Navigate to the project directory:
+
+cd nodejs-rest-api
+
+Install the dependencies:
+
+npm install
+
+Environment Variables
+
+Create a ".env" file in the root directory of the project.
+
+Add the following variables, using your own values:
+
+PORT=3000
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_secure_secret_key
+
+Do not commit your ".env" file or expose database credentials and JWT secrets.
+
+Run the Application
+
+Start the server:
+
+npm start
+
+The application uses port "3000" in its current configuration.
+
+Ensure that your MongoDB connection settings are correct before starting the application.
+
+API Testing
+
+Use Postman to test the API endpoints, including authentication, protected routes, user management, and post management.
 
 Purpose
 
-This project was developed as part of my practical learning journey in backend development, with a focus on building REST APIs, working with databases, implementing authentication, and organizing code using controllers, routes, models, and middleware.
+This project is part of my practical learning journey in backend development. It has helped me practice building REST APIs, connecting to MongoDB, implementing authentication and authorization, and organizing an application using routes, controllers, models, and middleware.
