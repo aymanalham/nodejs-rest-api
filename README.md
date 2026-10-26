@@ -1,8 +1,22 @@
 Node.js REST API
 
-A RESTful API built with Node.js, Express.js, and MongoDB.
+A backend REST API built with Node.js, Express.js, MongoDB, and Mongoose.
 
-This project demonstrates backend development concepts, including user authentication, authorization, database operations, and post management.
+This project demonstrates backend development fundamentals, including RESTful routing, user authentication, authorization, database operations, input validation, error handling, and post management.
+
+Features
+
+- User registration and login
+- Password hashing with bcrypt
+- JWT-based authentication
+- Role-based authorization for users and administrators
+- User profile retrieval and updates
+- Post creation, retrieval, updating, and deletion
+- Post ownership checks
+- Pagination, search, and sorting
+- Request validation
+- Centralized error handling
+- MongoDB integration using Mongoose
 
 Technologies
 
@@ -11,39 +25,124 @@ Technologies
 - MongoDB
 - Mongoose
 - JSON Web Tokens (JWT)
-- JavaScript
-- Postman
+- bcrypt
+- dotenv
 
-Features
+Requirements
 
-User Management
+Install the following before running the project:
 
-- User registration and login.
-- Retrieve users and individual user information.
-- Update and delete user information.
-- Retrieve the authenticated user's profile.
+- Node.js
+- npm
+- A MongoDB database
 
-Authentication and Authorization
+Installation
 
-- JWT-based authentication.
-- Protected routes using authentication middleware.
-- Role-based authorization.
-- Access control for protected resources.
+Clone the repository:
 
-Post Management
+git clone https://github.com/aymanalham/nodejs-rest-api.git
 
-- Create, retrieve, update, and delete posts.
-- Associate posts with their authors.
-- Retrieve author information using Mongoose population.
-- Restrict users from modifying posts they do not own.
+Navigate to the project directory:
 
-API Features
+cd nodejs-rest-api
 
-- Pagination.
-- Search posts by title.
-- Sort results by selected fields and order.
-- Request validation.
-- Centralized error handling.
+Install dependencies:
+
+npm install
+
+Create a ".env" file in the project root directory.
+
+Add the following environment variables:
+
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_long_random_secret
+PORT=3000
+
+Replace the example values with your own configuration.
+
+Never commit your ".env" file or expose database credentials and secret keys.
+
+Running the Application
+
+Start the server:
+
+npm start
+
+The API will be available at:
+
+http://localhost:3000
+
+API Endpoints
+
+Authentication
+
+Method| Endpoint| Description| Access
+POST| "/users/register"| Register a new user| Public
+POST| "/users/login"| Log in and receive a JWT| Public
+
+Users
+
+Method| Endpoint| Description| Access
+GET| "/users/me"| Get the current user's profile| Authenticated
+PATCH| "/users/:id"| Update permitted profile fields| Owner or admin
+GET| "/users"| List users| Admin
+GET| "/users/:id"| Get user details| Admin
+
+Posts
+
+Method| Endpoint| Description| Access
+GET| "/posts"| Retrieve posts| Public
+GET| "/posts/:id"| Retrieve a single post| Public
+POST| "/posts"| Create a post| Authenticated
+PATCH| "/posts/:id"| Update a post| Owner or admin
+PUT| "/posts/:id"| Update a post title| Owner or admin
+DELETE| "/posts/:id"| Delete a post| Owner or admin
+
+Authentication
+
+After logging in, the API returns a JWT.
+
+For protected endpoints, send the token using the HTTP Authorization header:
+
+Authorization: Bearer YOUR_TOKEN
+
+Post Query Parameters
+
+The posts endpoint supports pagination, search, and sorting.
+
+Example:
+
+GET /posts?page=1&limit=10
+
+Search by title:
+
+GET /posts?search=node
+
+Sort by title:
+
+GET /posts?sortBy=title&order=desc
+
+Supported sorting fields include "_id", "title", and "createdAt".
+
+Authorization
+
+Regular users can update and delete their own posts.
+
+Administrators can update and delete posts belonging to any user.
+
+User registration assigns the "user" role by default. Administrative privileges must be granted through a trusted administrative process.
+
+Error Handling
+
+The API handles common errors, including:
+
+- Invalid request data
+- Invalid MongoDB IDs
+- Duplicate records
+- Missing resources
+- Unauthorized requests
+- Forbidden operations
+- Unexpected server errors
 
 Project Structure
 
@@ -62,61 +161,23 @@ nodejs-rest-api/
 ├── routes/
 │   ├── posts.js
 │   └── users.js
+├── .env
 ├── .gitignore
 ├── package.json
 ├── package-lock.json
 ├── README.md
 └── server.js
 
-Getting Started
+Future Improvements
 
-Prerequisites
+- Automated API tests
+- API documentation with Swagger
+- Password reset functionality
+- Account deletion with appropriate authorization
+- Deployment to a production hosting platform
 
-- Node.js
-- npm
-- A MongoDB database
-- Postman (optional, for testing API requests)
+Author
 
-Installation
+Ayman Abdul-Ilah Al-Hamad
 
-Clone the repository:
-
-git clone https://github.com/aymanalham/nodejs-rest-api.git
-
-Navigate to the project directory:
-
-cd nodejs-rest-api
-
-Install the dependencies:
-
-npm install
-
-Environment Variables
-
-Create a ".env" file in the root directory of the project.
-
-Add the following variables, using your own values:
-
-PORT=3000
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_secure_secret_key
-
-Do not commit your ".env" file or expose database credentials and JWT secrets.
-
-Run the Application
-
-Start the server:
-
-npm start
-
-The application uses port "3000" in its current configuration.
-
-Ensure that your MongoDB connection settings are correct before starting the application.
-
-API Testing
-
-Use Postman to test the API endpoints, including authentication, protected routes, user management, and post management.
-
-Purpose
-
-This project is part of my practical learning journey in backend development. It has helped me practice building REST APIs, connecting to MongoDB, implementing authentication and authorization, and organizing an application using routes, controllers, models, and middleware.
+GitHub: https://github.com/aymanalham

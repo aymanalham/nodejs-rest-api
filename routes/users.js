@@ -1,41 +1,30 @@
 const express = require("express");
 const router = express.Router();
+
 const {
-    getUsers,
-    getUser,
-    createUser,
-    updateUser,
-    replaceUser,
-    deletUser,
-    register,
-    login,
-    getMe
+getUsers,
+getUser,
+getMe,
+updateUser,
+register,
+login
 } = require("../controllers/userController");
 
-const {authMiddleware} = require("../middleware/authMiddleware");
-const validateUser = (req, res, next) => {
-    if (!req.body.name || req.body.age == undefined) {
-        return res.status(404).send("name and age are required");
-    }
+const {
+authMiddleware,
+adminMiddleware
+} = require("../middleware/authMiddleware");
 
-    next();
-};
-console.log("POST ROUTE REGISTERED");
-
-router.get("/test", (req, res, next) => {
-    try {
-        throw new Error("My first error in try");
-    } catch (err) {
-        next(err);
-    }
-});
-router.get("/", getUsers);
-router.get("/me",authMiddleware, getMe);
+// Public routes
 router.post("/register", register);
 router.post("/login", login);
-router.get("/:id", getUser);
-router.post("/", validateUser, createUser);
+
+// Logged-in users
+router.get("/me", authMiddleware, getMe);
 router.patch("/:id", authMiddleware, updateUser);
-router.put("/:id", replaceUser);
-router.delete("/:id", deletUser);
+
+// Admin-only routes
+router.get("/", authMiddleware, adminMiddleware, getUsers);
+router.get("/:id", authMiddleware, adminMiddleware, getUser);
+
 module.exports = router;
